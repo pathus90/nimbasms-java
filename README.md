@@ -1,247 +1,540 @@
 # nimbasms-java
 
-A Java module for communicating with the **Nimba SMS API**.
+<div align="center">
 
-[![](https://jitpack.io/v/nimbasms/nimbasms-java.svg)](https://jitpack.io/#nimbasms/nimbasms-java)
+[![JitPack](https://jitpack.io/v/nimbasms/nimbasms-java.svg)](https://jitpack.io/#nimbasms/nimbasms-java)
+[![Java](https://img.shields.io/badge/Java-11+-orange.svg)](https://www.oracle.com/java/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+**Official Java SDK for the Nimba SMS API**
+
+[Documentation](https://docs.nimbasms.com) • [API Reference](https://api.nimbasms.com) • [Partner Portal](https://www.nimbasms.com)
+
+</div>
 
 ---
 
-## Table of Contents
+## 📋 Table of Contents
 
+- [Overview](#overview)
+- [Features](#features)
+- [Prerequisites](#prerequisites)
 - [Installation](#installation)
-- [JitPack Setup](#jitpack-setup)
-- [Credentials Setup](#credentials-setup)
+- [Quick Start](#quick-start)
 - [Usage](#usage)
-    - [Access Token](#access-token)
-    - [Accounts](#accounts)
-    - [Groups](#groups)
-    - [Sender Names](#sender-names)
-    - [Contacts](#contacts)
-    - [Messages](#messages)
-    - [Purchases](#purchases)
+  - [Authentication](#authentication)
+  - [Accounts](#accounts)
+  - [Messages](#messages)
+  - [Contacts](#contacts)
+  - [Groups](#groups)
+  - [Sender Names](#sender-names)
+  - [Purchases](#purchases)
+- [Error Handling](#error-handling)
+- [Best Practices](#best-practices)
+- [Contributing](#contributing)
+- [License](#license)
+- [Support](#support)
 
 ---
 
-## <a name="installation"></a> Installation
+## 🎯 Overview
 
-### System Requirements
-- JDK 11 or higher.
-- subscription via Nimba SMS Partner portal
+`nimbasms-java` is the official Java SDK for integrating with the **Nimba SMS API**. This library provides a simple and intuitive interface to send SMS messages, manage contacts, track purchases, and more.
 
-- Java 11 or higher
-- Subscription via [Nimba SMS Partner Portal](https:///www.nimbasms.com)
+### Why Use This SDK?
 
-### Maven (Default - Maven Central)
-### Add Maven Dependency
-If you use Maven, add the following configuration to your project's `pom.xml`
-```maven
+- ✅ **Type-safe** - Full Java type safety with comprehensive error handling
+- ✅ **Easy to use** - Clean, intuitive API designed for developer productivity
+- ✅ **Well documented** - Extensive code examples and documentation
+- ✅ **Production ready** - Battle-tested in production environments
+- ✅ **Actively maintained** - Regular updates and bug fixes
+
+---
+
+## ✨ Features
+
+- 📤 **Send SMS** - Send single or bulk SMS messages
+- 👥 **Contact Management** - Create, update, and organize contacts
+- 📊 **Account Information** - Check balance and account details
+- 🏷️ **Sender Names** - Manage custom sender IDs
+- 📁 **Group Management** - Organize contacts into groups
+- 💳 **Purchase History** - Track SMS credit purchases
+- 🔄 **Pagination Support** - Navigate through large result sets
+
+---
+
+## 📦 Prerequisites
+
+Before you begin, ensure you have the following:
+
+- **Java**: JDK 11 or higher
+- **Build Tool**: Maven or Gradle
+- **Nimba SMS Account**: Active subscription via [Nimba SMS Partner Portal](https://www.nimbasms.com)
+- **API Credentials**: `ACCOUNT_SID` and `AUTH_TOKEN` (obtain from your dashboard)
+
+---
+
+## 🚀 Installation
+
+### Option 1: Maven Central (Recommended)
+
+Add the following dependency to your `pom.xml`:
+
+```xml
 <dependency>
-  <groupId>com.nimbasms</groupId>
-  <artifactId>nimbasms</artifactId>
-  <version>0.0.1</version>
+    <groupId>com.nimbasms</groupId>
+    <artifactId>nimbasms</artifactId>
+    <version>0.0.1</version>
 </dependency>
 ```
-## <a name="jitpack-setup"></a> JitPack Setup
-> ⚠️ If the package is not yet on Maven Central, you can use JitPack
+
+### Option 2: JitPack
+
+If the package is not yet available on Maven Central, use JitPack:
+
+#### 1. Add JitPack repository
 
 ```xml
 <repositories>
-  <repository>
-  <id>jitpack.io</id>
-  <url>https://jitpack.io</url>
-  </repository>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
 </repositories>
 ```
-### Add Dependency
-Using the latest release tag (recommended):
+
+#### 2. Add dependency
+
+**Using latest release tag:**
 
 ```xml
 <dependency>
     <groupId>com.github.nimbasms</groupId>
     <artifactId>nimbasms-java</artifactId>
-    <version>v0.0.1</version> <!-- Replace with the latest tag -->
+    <version>v0.0.1</version>
 </dependency>
 ```
-If no release exists:
+
+**Using master branch:**
 
 ```xml
 <dependency>
     <groupId>com.github.nimbasms</groupId>
     <artifactId>nimbasms-java</artifactId>
-    <version>master-SNAPSHOT</version> <!-- Or use commit hash -->
+    <version>master-SNAPSHOT</version>
 </dependency>
 ```
-## Configuration of Credentials
 
-Before instantiating a `NimbaSMSClient` object, ensure you have the required credentials. Obtain these credentials (ACCOUNT_SID and AUTH_TOKEN) from your SMS service provider.
+### Gradle
 
-```java
-String ACCOUNT_SID = "Your_ACCOUNT_SID";
-String AUTH_TOKEN = "Your_AUTH_TOKEN";
+```gradle
+dependencies {
+    implementation 'com.nimbasms:nimbasms:0.0.1'
+}
 ```
 
-## <a name="accesToken"></a> Get your Access token
+---
+
+## ⚡ Quick Start
+
 ```java
 import com.nimbasms.nimbasms.NimbaSMSClient;
+import com.nimbasms.nimbasms.response.MessageResponse;
+import java.util.List;
 
-NimbaSMSClient client = new NimbaSMSClient(ACCOUNT_SID, AUTH_TOKEN)
+public class QuickStart {
+    public static void main(String[] args) {
+        // Initialize client with your credentials
+        String ACCOUNT_SID = "your_account_sid";
+        String AUTH_TOKEN = "your_auth_token";
+        
+        NimbaSMSClient client = new NimbaSMSClient(ACCOUNT_SID, AUTH_TOKEN);
+        
+        // Send your first SMS
+        MessageResponse response = client.getMessage().create(
+            "YourSenderName",
+            List.of("+224XXXXXXXXX"),
+            "Hello from Nimba SMS!"
+        );
+        
+        System.out.println("Message sent: " + response);
+    }
+}
 ```
 
-## <a name="account"></a> Accounts
-Retrieve the account information using the getAccount() method:
+---
+
+## 📖 Usage
+
+### Authentication
+
+Create a client instance with your API credentials:
+
+```java
+String ACCOUNT_SID = System.getenv("NIMBA_ACCOUNT_SID");
+String AUTH_TOKEN = System.getenv("NIMBA_AUTH_TOKEN");
+
+NimbaSMSClient client = new NimbaSMSClient(ACCOUNT_SID, AUTH_TOKEN);
+```
+
+> 💡 **Security Tip**: Store credentials in environment variables, not in your code!
+
+---
+
+### Accounts
+
+#### Get Account Information
+
 ```java
 AccountResponse account = client.getAccount().get();
-System.out.println(account);
-```
-Check balance
-```java
-AccountResponse account = client.getAccount().get();
-System.out.println(account.getBalance());
+System.out.println("Account Name: " + account.getName());
+System.out.println("Status: " + account.getStatus());
 ```
 
-## <a name="group"></a> Groups
-This code retrieves a list of all groups.
+#### Check Balance
+
+```java
+AccountResponse account = client.getAccount().get();
+double balance = account.getBalance();
+System.out.println("Current Balance: " + balance + " credits");
+```
+
+---
+
+### Messages
+
+#### Send Single SMS
+
+```java
+MessageResponse response = client.getMessage().create(
+    "MySenderName",
+    List.of("+224XXXXXXXXX"),
+    "Your message here"
+);
+```
+
+#### Send Bulk SMS
+
+```java
+List<String> recipients = List.of(
+    "+224610000001",
+    "+224620000002",
+    "+224630000003"
+);
+
+MessageResponse response = client.getMessage().create(
+    "MySenderName",
+    recipients,
+    "Bulk SMS message"
+);
+```
+
+#### List All Messages
+
+```java
+// Get all messages
+MessageResponse messages = client.getMessage().list();
+
+// Get specific number of messages
+MessageResponse last10 = client.getMessage().list(10, 0);
+```
+
+#### Pagination
+
+```java
+// Get first page
+MessageResponse page1 = client.getMessage().list(10, 0);
+
+// Navigate to next page
+MessageResponse page2 = client.getMessage().next();
+
+// Navigate to previous page
+MessageResponse previousPage = client.getMessage().previous();
+```
+
+#### Retrieve Message Details
+
+```java
+String messageId = "msg_123456";
+MessageDetails details = client.getMessage().retrieve(messageId);
+
+System.out.println("Status: " + details.getStatus());
+System.out.println("Sent: " + details.getCreatedAt());
+```
+
+---
+
+### Contacts
+
+#### Create Contact
+
+```java
+// Simple contact
+ContactDto contact = client.getContact().create(
+    "+224XXXXXXXXX",
+    null,
+    null
+);
+
+// Contact with name and groups
+ContactDto contact = client.getContact().create(
+    "+224XXXXXXXXX",
+    "John Doe",
+    List.of("Customers", "VIP")
+);
+```
+
+#### List Contacts
+
+```java
+// Get all contacts
+ContactResponse contacts = client.getContact().list();
+
+// Get specific number
+ContactResponse last10 = client.getContact().list(10, 0);
+
+// Pagination
+ContactResponse nextPage = client.getContact().next();
+ContactResponse previousPage = client.getContact().previous();
+```
+
+---
+
+### Groups
+
+#### List All Groups
+
 ```java
 GroupResponse groups = client.getGroup().list();
-System.out.println(groups);
+
+for (Group group : groups.getData()) {
+    System.out.println(group.getName());
+}
 ```
 
-You can also retrieve the last 10 Group by passing in the limit and offset:
+#### Pagination
+
 ```java
-GroupResponse last10groups = client.getGroup().list(10, 1);
-System.out.println(last10groups);
-```
-The next method returns the next item in a list.
-```java
-GroupResponse nextGroups = client.getGroup().next();
-System.out.println(nextGroups);
-```
-The previous method returns the previous item in the list.
-```java
-GroupResponse previousGroups = client.getGroup().previous();
-System.out.println(previousGroups);
+// Get first 10 groups
+GroupResponse page1 = client.getGroup().list(10, 0);
+
+// Navigate pages
+GroupResponse nextPage = client.getGroup().next();
+GroupResponse previousPage = client.getGroup().previous();
 ```
 
-## <a name="sendername"></a> Sendernames
-Retrieve the sender names using the getSenderName() method:
+---
+
+### Sender Names
+
+#### List Sender Names
 
 ```java
 SenderNameResponse senderNames = client.getSenderName().list();
-System.out.println(senderNames);
-```
-You can also retrieve the last 10 sender names by passing in the limit and offset:
 
-```java
-SenderNameResponse last10SenderNames = client.getSenderName().list(10, 1);
-System.out.println(last10SenderNames);
-```
-
-The next method returns the next item in a list.
-
-```java
-SenderNameResponse nextSenderNames = client.getSenderName().next();
-System.out.println(nextSenderNames);
-```
-The previous method returns the previous item in the list.
-
-```java
-SenderNameResponse previousSenderNames = client.getSenderName().previous();
-System.out.println(previousSenderNames);
+// Check approved sender names
+for (SenderName name : senderNames.getData()) {
+    if (name.isApproved()) {
+        System.out.println("Approved: " + name.getName());
+    }
+}
 ```
 
-## <a name="contact"></a> Contacts
-This code retrieves a list of all contacts.
+#### Pagination
+
 ```java
-ContactResponse contacts = client.getContact().list();
-System.out.println(contacts);
-```
-You can also retrieve the last 10 contacts by passing in the limit and offset:
-```java
-ContactResponse last10contacts = client.getContact().list(10, 1);
-System.out.println(last10contacts);
-```
-The next method returns the next item in a list.
-```java
-ContactResponse nextContacts = client.getContact().next();
-System.out.println(nextContacts);
-```
-The previous method returns the previous item in the list.
-```java
-ContactResponse previousContacts = client.getContact().previous();
-System.out.println(previousContacts);
+SenderNameResponse page1 = client.getSenderName().list(10, 0);
+SenderNameResponse nextPage = client.getSenderName().next();
+SenderNameResponse previousPage = client.getSenderName().previous();
 ```
 
-Create Contact. This contact will be added to the default contact list:
-```java
-ContactDto createContactResponse = client.getContact().create("+224XXXXXXXXX", null, null);
-System.out.println(createContactResponse)
-```
-Create with groups and name - name and groups are optional.
-```java
-ContactDto contactResponseWithGroupsAndName = client.getContact().create("+224XXXXXXXXX", "Foo", List.of("API", "Facebook Client"));
-System.out.println(contactResponseWithGroupsAndName);
-```
+---
 
-## <a name="message"></a> Messages
-Get All messages
-```java
-MessageResponse messages = client.getMessage().list();
-System.out.println(messages);
-```
-Get only last 10 messages
-```java
-MessageResponse last10Messages = client.getMessage().list(10, 1);
-System.out.println(last10Messages);
-```
-The next method returns the next item in a list.
-```java
-MessageResponse nextMessages = client.getMessage().next();
-System.out.println(nextMessages);
-```
-The previous method returns the previous item in the list.
-```java
-MessageResponse previousMessages = client.getMessage().previous();
-System.out.println(previousMessages);
-```
+### Purchases
 
-Send a message
-```java
-MessageResponse messageResponse = client.getMessage().create("sender_name", List.of("+224XXXXXXXXX"), "Hello nimba");
-System.out.println(messageResponse);
-```
-Retrieve message
-```java
-MessageDetails messageDetails = client.getMessage().retrieve("123");
-System.out.println(messageDetails);
-```
+#### List Purchase History
 
-## <a name="purchase"></a> Purchases
-List all purchases
 ```java
+// Get all purchases
 PurchaseResponse purchases = client.getPurchase().list();
-```
-Retrieve the last 10 purchases
-```java
-PurchaseResponse last10Purchases = client.getPurchase().list(10, 1);
-```
-The next method returns the next item in a list.
-```java
-PurchaseResponse nextPurchases = client.getPurchase().next();
-```
-The previous method returns the previous item in a list.
-```java
-PurchaseResponse previousPurchases = client.getPurchase().previous();
-```
----
 
-## License
+// Get specific number
+PurchaseResponse recent = client.getPurchase().list(10, 0);
+```
 
-This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+#### Pagination
+
+```java
+PurchaseResponse page1 = client.getPurchase().list(10, 0);
+PurchaseResponse nextPage = client.getPurchase().next();
+PurchaseResponse previousPage = client.getPurchase().previous();
+```
 
 ---
 
-## Author & Contributions
+## ⚠️ Error Handling
 
-Contributions to the official Java client for [Nimba SMS](https://nimbasms.com)
+Always wrap API calls in try-catch blocks:
 
-> 💡 Feel free to open issues or pull requests to improve the SDK.
+```java
+try {
+    MessageResponse response = client.getMessage().create(
+        "SenderName",
+        List.of("+224XXXXXXXXX"),
+        "Test message"
+    );
+    System.out.println("Success: " + response);
+    
+} catch (NimbaSMSException e) {
+    System.err.println("API Error: " + e.getMessage());
+    System.err.println("Error Code: " + e.getErrorCode());
+    
+} catch (Exception e) {
+    System.err.println("Unexpected error: " + e.getMessage());
+}
+```
+
+---
+
+## 💡 Best Practices
+
+### 1. **Secure Your Credentials**
+
+```java
+// ❌ Bad - hardcoded credentials
+NimbaSMSClient client = new NimbaSMSClient("AC123...", "xyz789...");
+
+// ✅ Good - use environment variables
+String sid = System.getenv("NIMBA_ACCOUNT_SID");
+String token = System.getenv("NIMBA_AUTH_TOKEN");
+NimbaSMSClient client = new NimbaSMSClient(sid, token);
+```
+
+### 2. **Reuse Client Instance**
+
+```java
+// Create once, use many times
+public class SMSService {
+    private final NimbaSMSClient client;
+    
+    public SMSService() {
+        this.client = new NimbaSMSClient(
+            System.getenv("NIMBA_ACCOUNT_SID"),
+            System.getenv("NIMBA_AUTH_TOKEN")
+        );
+    }
+    
+    public void sendWelcome(String phoneNumber) {
+        client.getMessage().create("Brand", List.of(phoneNumber), "Welcome!");
+    }
+}
+```
+
+### 3. **Validate Phone Numbers**
+
+```java
+public boolean isValidGuineaNumber(String phone) {
+    // Guinea numbers: +224 followed by 9 digits
+    return phone.matches("^\\+224[0-9]{9}$");
+}
+```
+
+### 4. **Handle Pagination Efficiently**
+
+```java
+public void processAllMessages() {
+    MessageResponse response = client.getMessage().list(50, 0);
+    
+    do {
+        response.getData().forEach(this::processMessage);
+        
+        if (response.getNext() != null) {
+            response = client.getMessage().next();
+        } else {
+            break;
+        }
+    } while (true);
+}
+```
+
+### 5. **Monitor Your Balance**
+
+```java
+public void checkBalanceBeforeSending(int messageCount) {
+    AccountResponse account = client.getAccount().get();
+    double balance = account.getBalance();
+    
+    if (balance < messageCount) {
+        throw new IllegalStateException(
+            "Insufficient balance. Required: " + messageCount + 
+            ", Available: " + balance
+        );
+    }
+}
+```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how you can help:
+
+1. **Fork** the repository
+2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
+3. **Commit** your changes: `git commit -m 'Add amazing feature'`
+4. **Push** to the branch: `git push origin feature/amazing-feature`
+5. **Open** a Pull Request
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/nimbasms/nimbasms-java.git
+cd nimbasms-java
+
+# Build the project
+mvn clean install
+
+# Run tests
+mvn test
+```
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🆘 Support
+
+Need help? We're here for you!
+
+- 📧 **Email**: support@nimbasms.com
+- 📚 **Documentation**: [docs.nimbasms.com](https://docs.nimbasms.com)
+- 🌐 **Website**: [www.nimbasms.com](https://www.nimbasms.com)
+- 💬 **Issues**: [GitHub Issues](https://github.com/nimbasms/nimbasms-java/issues)
+
+---
+
+## 🔗 Links
+
+- [Official Website](https://www.nimbasms.com)
+- [API Documentation](https://developers.nimbasms.com/)
+- [Partner Portal](https://www.nimbasms.com/partner)
+- [Status Page](https://status.nimbasms.com)
+
+---
+
+<div align="center">
+
+**Crafted with ❤️ by [Mamadou Pathé DIALLO](https://github.com/pathus90)**
+
+*Proud contributor to Nimba SMS*
+
+[⬆ Back to Top](#nimbasms-java)
+
+</div>
+
+</div>
